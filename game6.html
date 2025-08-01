@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Racing Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        h1 {
+            color: #d35400;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .game-container {
+            width: 800px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .race-track {
+            height: 100px;
+            background-color: #f0f0f0;
+            position: relative;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+            overflow: hidden;
+            border-radius: 5px;
+        }
+        
+        .midpoint {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        .word-box {
+            width: 120px;
+            height: 50px;
+            position: absolute;
+            top: 25px;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            border-radius: 5px;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            transition: all 0.3s;
+        }
+        
+        .word-box.inactive {
+            opacity: 0.5;
+            filter: blur(1px);
+        }
+        
+        .word-box.active {
+            box-shadow: 0 0 0 3px #f39c12;
+            z-index: 10;
+            opacity: 1;
+            filter: none;
+        }
+        
+        .level-1 .word-box {
+            background-color: #e74c3c;
+        }
+        
+        .level-2 .word-box {
+            background-color: #3498db;
+        }
+        
+        .level-3 .word-box {
+            background-color: #2ecc71;
+        }
+        
+        .level-label {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        #letter-input {
+            font-size: 24px;
+            width: 200px;
+            text-align: center;
+            text-transform: lowercase;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        
+        button {
+            background-color: #d35400;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #e67e22;
+        }
+        
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d35400;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .results {
+            font-size: 20px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: #d35400;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .completed {
+            background-color: #27ae60 !important;
+        }
+        
+        .finished {
+            animation-play-state: paused;
+        }
+        
+        .word-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .letter {
+            position: relative;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .letter.completed {
+            color: #f1c40f;
+            font-weight: bold;
+        }
+        
+        .letter.current {
+            text-decoration: underline;
+            color: #f39c12;
+        }
+		
+		        .word-box.partial-match {
+            box-shadow: 0 0 0 3px #f39c12;
+            opacity: 0.8;
+        }
+        
+        .word-box.full-match {
+            box-shadow: 0 0 0 3px #27ae60;
+            opacity: 1;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+ <h1>Word Racing Challenge</h1>
+    
+    <div class="game-container">
+        <div class="timer" id="timer">Time: 30s</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="race-track level-1">
+            <div class="level-label">Level 1</div>
+            <div class="midpoint"></div>
+            <div id="word-container-1"></div>
+        </div>
+        
+        <div class="race-track level-2">
+            <div class="level-label">Level 2</div>
+            <div class="midpoint"></div>
+            <div id="word-container-2"></div>
+        </div>
+        
+        <div class="race-track level-3">
+            <div class="level-label">Level 3</div>
+            <div class="midpoint"></div>
+            <div id="word-container-3"></div>
+        </div>
+        
+        <div class="controls">
+            <input type="text" id="letter-input" maxlength="150" autofocus disabled>
+            <button id="start-btn">Start Game</button>
+            <div class="results" id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        const config = {
+            timeLimit: 30,
+            wordSpeed: {
+                1: 20000, // 20 seconds (Level 1)
+                2: 16000, // 16 seconds (Level 2)
+                3: 12000  // 12 seconds (Level 3)
+            },
+            words: {
+                //1: ["cat", "dog", "sun", "hat", "pen", "cup", "key", "fox", "jam", "leg"],
+                //2: ["apple", "beach", "chair", "dance", "eagle", "fairy", "grape", "house", "igloo", "jelly"],
+                //3: ["bicycle", "diamond", "giraffe", "jungle", "kitchen", "library", "mountain", "octopus", "rainbow", "sunflower"]
+				1: ["apache", "apar", "apar"],
+				2: ["apartment", "apatetic", "apple"],
+				3: ["apace", "apamin", "apas"]
+            },
+            maxInputLength: 100
+        };
+        
+        const state = {
+            currentLevel: 1,
+            timeLeft: config.timeLimit,
+            timer: null,
+            gameActive: false,
+            activeWords: [],
+            score: 0,
+            completedWords: {1: 0, 2: 0, 3: 0},
+            canSpawn: {1: true, 2: true, 3: true},
+            activeWordBox: null,
+            currentLetterIndex: 0,
+            userInput: "",
+            potentialMatches: []
+        };
+        
+        const elements = {
+            letterInput: document.getElementById('letter-input'),
+            startBtn: document.getElementById('start-btn'),
+            results: document.getElementById('results'),
+            timer: document.getElementById('timer'),
+            progressBar: document.getElementById('progress-bar'),
+            wordContainers: {
+                1: document.getElementById('word-container-1'),
+                2: document.getElementById('word-container-2'),
+                3: document.getElementById('word-container-3')
+            }
+        };
+        
+        function initGame() {
+            state.currentLevel = 1;
+            state.timeLeft = config.timeLimit;
+            state.gameActive = false;
+            state.activeWords = [];
+            state.score = 0;
+            state.completedWords = {1: 0, 2: 0, 3: 0};
+            state.canSpawn = {1: true, 2: true, 3: true};
+            state.activeWordBox = null;
+            state.currentLetterIndex = 0;
+            state.userInput = "";
+            state.potentialMatches = [];
+            
+            for (const level in elements.wordContainers) {
+                elements.wordContainers[level].innerHTML = '';
+            }
+            
+            elements.timer.textContent = `Time: ${state.timeLeft}s`;
+            elements.progressBar.style.width = '0%';
+            elements.results.style.display = 'none';
+            elements.letterInput.value = '';
+            elements.letterInput.disabled = true;
+            elements.startBtn.textContent = 'Start Game';
+            elements.startBtn.disabled = false;
+        }
+        
+        function startGame() {
+            initGame();
+            state.gameActive = true;
+            elements.letterInput.disabled = false;
+            elements.letterInput.focus();
+            elements.startBtn.disabled = true;
+            
+            state.timer = setInterval(updateTimer, 1000);
+            
+            for (let level = 1; level <= 3; level++) {
+                spawnWord(level);
+            }
+        }
+        
+        function updateTimer() {
+            state.timeLeft--;
+            elements.timer.textContent = `Time: ${state.timeLeft}s`;
+            elements.progressBar.style.width = `${((config.timeLimit - state.timeLeft) / config.timeLimit) * 100}%`;
+            
+            if (state.timeLeft <= 0) {
+                endGame();
+            }
+        }
+        
+        function spawnWord(level) {
+            if (!state.gameActive || !state.canSpawn[level]) return;
+            
+            state.canSpawn[level] = false;
+            const words = config.words[level];
+            const word = words[Math.floor(Math.random() * words.length)];
+            
+            const wordBox = document.createElement('div');
+            wordBox.className = 'word-box inactive';
+            wordBox.dataset.word = word;
+            wordBox.dataset.level = level;
+            wordBox.dataset.progress = '0';
+            wordBox.style.animationName = `moveRight-${level}`;
+            wordBox.style.animationDuration = `${config.wordSpeed[level]}ms`;
+            
+            const wordContainer = document.createElement('div');
+            wordContainer.className = 'word-container';
+            
+            for (let i = 0; i < word.length; i++) {
+                const letterSpan = document.createElement('div');
+                letterSpan.className = 'letter';
+                letterSpan.textContent = word[i];
+                letterSpan.dataset.index = i;
+                wordContainer.appendChild(letterSpan);
+            }
+            
+            wordBox.appendChild(wordContainer);
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes moveRight-${level} {
+                    from { left: 0; }
+                    to { left: calc(100% - 120px); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            elements.wordContainers[level].appendChild(wordBox);
+            state.activeWords.push(wordBox);
+            
+            const startTime = Date.now();
+            const animationDuration = config.wordSpeed[level];
+            
+            const checkProgress = () => {
+                if (!state.gameActive) return;
+                
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / animationDuration, 1);
+                wordBox.dataset.progress = Math.floor(progress * 100);
+                
+                if (progress >= 0.5 && !wordBox.dataset.midpointReached) {
+                    wordBox.dataset.midpointReached = true;
+                    state.canSpawn[level] = true;
+                    spawnWord(level);
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(checkProgress);
+                }
+            };
+            
+            requestAnimationFrame(checkProgress);
+            
+            wordBox.addEventListener('animationend', () => {
+                if (wordBox.dataset.progress !== '100') {
+                    wordBox.remove();
+                    state.activeWords = state.activeWords.filter(w => w !== wordBox);
+                    if (wordBox === state.activeWordBox) {
+                        clearActiveWord();
+                    }
+                }
+            });
+        }
+        
+        function setActiveWordBox(wordBox) {
+            if (state.activeWordBox) {
+                resetWordBox(state.activeWordBox);
+            }
+            
+            state.activeWordBox = wordBox;
+            state.currentLetterIndex = 0;
+            wordBox.classList.remove('inactive');
+            wordBox.classList.add('active');
+            
+            const letters = wordBox.querySelectorAll('.letter');
+            if (letters.length > 0) {
+                letters[0].classList.add('current');
+            }
+            
+            elements.letterInput.value = state.userInput;
+            elements.letterInput.focus();
+        }
+        
+        function resetWordBox(wordBox) {
+            wordBox.classList.remove('active');
+            wordBox.classList.add('inactive');
+            const letters = wordBox.querySelectorAll('.letter');
+            letters.forEach(letter => {
+                letter.classList.remove('completed', 'current');
+            });
+        }
+        
+        function clearActiveWord() {
+            if (state.activeWordBox) {
+                resetWordBox(state.activeWordBox);
+                state.activeWordBox = null;
+            }
+            state.currentLetterIndex = 0;
+            state.userInput = "";
+            elements.letterInput.value = "";
+        }
+        
+        function checkInput() {
+            if (!state.gameActive) return;
+
+            const input = elements.letterInput.value.toLowerCase();
+            
+            // Clear input if it's too long
+            if (input.length > config.maxInputLength) {
+                clearActiveWord();
+                return;
+            }
+
+            // Handle backspace
+            if (input.length < state.userInput.length) {
+                handleBackspace();
+                return;
+            }
+
+            state.userInput = input;
+
+            // If input is empty, clear active word
+            if (input.length === 0) {
+                clearActiveWord();
+                return;
+            }
+
+            // Find all words that match current input
+            state.potentialMatches = state.activeWords.filter(wordBox => 
+                wordBox.dataset.word.startsWith(input)
+            );
+
+            // If no active word but we have matches, select the first one
+            if (!state.activeWordBox && state.potentialMatches.length > 0) {
+                setActiveWordBox(state.potentialMatches[0]);
+            }
+
+            if (!state.activeWordBox) return;
+
+            const word = state.activeWordBox.dataset.word;
+            const letters = state.activeWordBox.querySelectorAll('.letter');
+            
+            // Find the longest correct prefix
+            let correctLength = 0;
+            while (correctLength < input.length && correctLength < word.length && 
+                   input[correctLength] === word[correctLength]) {
+                correctLength++;
+            }
+
+            // Update letter highlighting
+            for (let i = 0; i < letters.length; i++) {
+                if (i < correctLength) {
+                    letters[i].classList.add('completed');
+                    letters[i].classList.remove('current');
+                } else if (i === correctLength) {
+                    letters[i].classList.add('current');
+                } else {
+                    letters[i].classList.remove('current');
+                }
+            }
+
+            // Check if word is completed
+            if (correctLength === word.length && input.length === word.length) {
+                wordComplete(state.activeWordBox, state.activeWordBox.dataset.level);
+            }
+        }
+
+        
+        function handleBackspace() {
+            if (!state.activeWordBox) return;
+            
+            const word = state.activeWordBox.dataset.word;
+            const letters = state.activeWordBox.querySelectorAll('.letter');
+            const input = elements.letterInput.value.toLowerCase();
+            state.userInput = input;
+            
+            // Update letter highlighting
+            for (let i = 0; i < letters.length; i++) {
+                if (i < input.length) {
+                    letters[i].classList.add('completed');
+                    letters[i].classList.remove('current');
+                } else if (i === input.length) {
+                    letters[i].classList.add('current');
+                } else {
+                    letters[i].classList.remove('completed', 'current');
+                }
+            }
+            
+            // If input is empty, clear active word
+            if (input.length === 0) {
+                clearActiveWord();
+            }
+        }
+        
+        function wordComplete(wordBox, level) {
+            wordBox.classList.add('completed', 'finished');
+            wordBox.classList.remove('active');
+            state.score++;
+            state.completedWords[level]++;
+            
+            setTimeout(() => {
+                wordBox.remove();
+                state.activeWords = state.activeWords.filter(w => w !== wordBox);
+                if (wordBox === state.activeWordBox) {
+                    clearActiveWord();
+                }
+            }, 500);
+        }
+        
+        function endGame() {
+            clearInterval(state.timer);
+            state.gameActive = false;
+            elements.letterInput.disabled = true;
+            elements.startBtn.disabled = false;
+            elements.startBtn.textContent = 'Play Again';
+            
+            state.activeWords.forEach(wordBox => {
+                wordBox.classList.add('finished');
+                wordBox.classList.remove('active');
+            });
+            
+            elements.results.style.display = 'block';
+            elements.results.innerHTML = `
+                <p>Game Over!</p>
+                <p>Your Score: ${state.score} words</p>
+                <p>Level 1: ${state.completedWords[1]} words</p>
+                <p>Level 2: ${state.completedWords[2]} words</p>
+                <p>Level 3: ${state.completedWords[3]} words</p>
+            `;
+        }
+        
+        // Event listeners
+        elements.startBtn.addEventListener('click', startGame);
+        
+        elements.letterInput.addEventListener('input', function() {
+            checkInput();
+        });
+        
+        elements.letterInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace') {
+                // Let the backspace happen first, then handle it
+                setTimeout(() => {
+                    checkInput();
+                }, 0);
+            }
+        });
+        
+        initGame();
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accelerating Box with Text</title>
+    <style>
+        .container {
+            width: 500px;
+            height: 100px;
+            background-color: #f0f0f0;
+            position: relative;
+            border: 1px solid #ccc;
+            margin: 50px auto;
+            overflow: hidden;
+        }
+
+        .moving-box {
+            width: 80px;
+            /* Slightly wider for text */
+            height: 50px;
+            background-color: #4CAF50;
+            position: absolute;
+            top: 25px;
+            left: 0;
+            display: flex;
+            align-items: center;
+            /* Vertical center */
+            justify-content: center;
+            /* Horizontal center */
+            font-family: Arial, sans-serif;
+            color: white;
+            font-weight: bold;
+            animation: moveRight 10s ease-in forwards;
+            /* ease-in = acceleration */
+        }
+
+        @keyframes moveRight {
+            from {
+                left: 0;
+                transform: scale(1);
+                /* Optional: Start normal size */
+            }
+
+            to {
+                left: calc(100% - 80px);
+                transform: scale(1.1);
+                /* Optional: Slightly grow at the end */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="moving-box">Hello!</div> <!-- Text added here -->
+    </div>
+</body>
+
+</html>
