@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,13 +15,13 @@
             flex-direction: column;
             align-items: center;
         }
-        
+
         h1 {
             color: #d35400;
             text-align: center;
             margin-bottom: 30px;
         }
-        
+
         .game-container {
             width: 800px;
             background-color: white;
@@ -28,28 +29,39 @@
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-		
-		.status-container {
-			display: flex;
-		    flex-direction: column;
-			position: relative;
-		}
-		
-		.timer {
-			position: absolute;
+
+        .status-container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .timer {
+            position: absolute;
+            width: 10%;
             font-size: 24px;
             font-weight: bold;
             color: #d35400;
             margin: 0 10px 0;
-            text-align: left;
-			top: 30px;
-			z-index: 100;
+            top: 30px;
+            z-index: 100;
+            background-image: url('img/e_time.png');
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+
         }
-		
-		.score {
-			top: 60px;
-		}
-        
+
+        .score {
+            top: 60px;
+            background-image: url('img/e_score.png');
+        }
+
+        .inside-text {
+            width: 100%;
+            padding-left: 45%;
+            z-index: 101;
+        }
+
         .race-track {
             height: 100px;
             background-color: #f0f0f0;
@@ -59,7 +71,7 @@
             overflow: hidden;
             border-radius: 5px;
         }
-        
+
         .midpoint {
             position: absolute;
             left: 50%;
@@ -68,7 +80,7 @@
             width: 2px;
             background-color: rgba(0, 0, 0, 0.2);
         }
-        
+
         .word-box {
             width: 120px;
             height: 50px;
@@ -87,31 +99,31 @@
             animation-fill-mode: forwards;
             transition: all 0.3s;
         }
-        
+
         .word-box.inactive {
             opacity: 0.5;
             filter: blur(1px);
         }
-        
+
         .word-box.active {
             box-shadow: 0 0 0 3px #f39c12;
             z-index: 10;
             opacity: 1;
             filter: none;
         }
-        
+
         .level-1 .word-box {
             background-color: #e74c3c;
         }
-        
+
         .level-2 .word-box {
             background-color: #3498db;
         }
-        
+
         .level-3 .word-box {
             background-color: #2ecc71;
         }
-        
+
         .level-label {
             position: absolute;
             left: 10px;
@@ -119,14 +131,14 @@
             font-weight: bold;
             z-index: 1;
         }
-        
+
         .controls {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-top: 20px;
         }
-        
+
         #letter-input {
             font-size: 24px;
             width: 200px;
@@ -135,7 +147,7 @@
             margin-bottom: 10px;
             padding: 5px;
         }
-        
+
         button {
             background-color: #d35400;
             color: white;
@@ -147,24 +159,24 @@
             margin: 5px;
             transition: background-color 0.3s;
         }
-        
+
         button:hover {
             background-color: #e67e22;
         }
-        
+
         button:disabled {
             background-color: #95a5a6;
             cursor: not-allowed;
         }
-        
-       
+
+
         .results {
             font-size: 20px;
             margin-top: 20px;
             text-align: center;
             display: none;
         }
-        
+
         .progress-container {
             width: 100%;
             height: 5px;
@@ -173,89 +185,94 @@
             margin: 10px 0;
             overflow: hidden;
         }
-        
+
         .progress-bar {
             height: 100%;
             background-color: #d35400;
             width: 0%;
             transition: width 0.3s;
         }
-        
+
         .completed {
             background-color: #27ae60 !important;
         }
-        
+
         .finished {
             animation-play-state: paused;
         }
-        
+
         .word-container {
             display: flex;
             justify-content: center;
             width: 100%;
             height: 100%;
         }
-        
+
         .letter {
             position: relative;
             width: 20px;
             text-align: center;
         }
-        
+
         .letter.completed {
             color: #f1c40f;
             font-weight: bold;
         }
-        
+
         .letter.current {
             text-decoration: underline;
             color: #f39c12;
         }
-		
-		/* These classes already exist in your CSS */
-		.word-box.partial-match {
-			box-shadow: 0 0 0 3px #f39c12;
-			opacity: 0.8;
-		}
 
-		.word-box.full-match {
-			box-shadow: 0 0 0 3px #27ae60;
-			opacity: 1;
-			z-index: 10;
-		}
+        /* These classes already exist in your CSS */
+        .word-box.partial-match {
+            box-shadow: 0 0 0 3px #f39c12;
+            opacity: 0.8;
+        }
+
+        .word-box.full-match {
+            box-shadow: 0 0 0 3px #27ae60;
+            opacity: 1;
+            z-index: 10;
+        }
     </style>
 </head>
+
 <body>
- <h1>Word Racing Challenge</h1>
-    
+    <h1>Word Racing Challenge</h1>
+
     <div class="game-container">
-		<div class ="status-container">
-		   <div class="timer" id="timer">Time: 30s</div>
-		   <div class="timer score" id="scoreBox">Score: 0</div>
-		</div>
+        <div class="status-container">
+            <div class="timer">
+                <div class="inside-text" id="timer">30</div>
+            </div>
+            <div class="timer score">
+                <div class="inside-text" id="scoreBox">0</div>
+            </div>
+        </div>
 
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
-        
+
         <div class="race-track level-1">
             <div class="level-label">Level 1</div>
             <div class="midpoint"></div>
             <div id="word-container-1"></div>
         </div>
-        
+
         <div class="race-track level-2">
             <div class="level-label">Level 2</div>
             <div class="midpoint"></div>
             <div id="word-container-2"></div>
         </div>
-        
+
         <div class="race-track level-3">
             <div class="level-label">Level 3</div>
             <div class="midpoint"></div>
             <div id="word-container-3"></div>
         </div>
-        
+
         <div class="controls">
             <input type="text" id="letter-input" maxlength="150" autofocus disabled>
             <button id="start-btn">Start Game</button>
@@ -270,21 +287,21 @@
                 1: 10000, // 20 seconds (Level 1)
                 2: 8000, // 16 seconds (Level 2)
                 3: 6000,  // 12 seconds (Level 3)
-				//1: 20000,
-				//2: 16000,
-				//3: 12000,
+                //1: 20000,
+                //2: 16000,
+                //3: 12000,
             },
             words: {
                 1: ["apache", "apar", "apar", "cat", "dog", "sun", "hat", "pen", "cup", "key", "fox", "jam", "leg"],
                 2: ["apartment", "apatetic", "apple", "beach", "chair", "dance", "eagle", "fairy", "grape", "house", "igloo", "jelly"],
                 3: ["apace", "apamin", "apas", "bicycle", "diamond", "giraffe", "jungle", "kitchen", "library", "mountain", "octopus", "rainbow", "sunflower"]
-				//1: ["apache", "apar", "apar"],
-				//2: ["apartment", "apatetic", "apple"],
-				//3: ["apace", "apamin", "apas"]
+                //1: ["apache", "apar", "apar"],
+                //2: ["apartment", "apatetic", "apple"],
+                //3: ["apace", "apamin", "apas"]
             },
             maxInputLength: 100
         };
-        
+
         const state = {
             currentLevel: 1,
             timeLeft: config.timeLimit,
@@ -292,14 +309,14 @@
             gameActive: false,
             activeWords: [],
             score: 0,
-            completedWords: {1: 0, 2: 0, 3: 0},
-            canSpawn: {1: true, 2: true, 3: true},
+            completedWords: { 1: 0, 2: 0, 3: 0 },
+            canSpawn: { 1: true, 2: true, 3: true },
             activeWordBox: null,
             currentLetterIndex: 0,
             userInput: "",
             potentialMatches: []
         };
-        
+
         const elements = {
             letterInput: document.getElementById('letter-input'),
             startBtn: document.getElementById('start-btn'),
@@ -312,26 +329,26 @@
                 3: document.getElementById('word-container-3')
             }
         };
-        
+
         function initGame() {
             state.currentLevel = 1;
             state.timeLeft = config.timeLimit;
             state.gameActive = false;
             state.activeWords = [];
             state.score = 0;
-			showScoreToBox(0);
-            state.completedWords = {1: 0, 2: 0, 3: 0};
-            state.canSpawn = {1: true, 2: true, 3: true};
+            showScoreToBox(0);
+            state.completedWords = { 1: 0, 2: 0, 3: 0 };
+            state.canSpawn = { 1: true, 2: true, 3: true };
             state.activeWordBox = null;
             state.currentLetterIndex = 0;
             state.userInput = "";
             state.potentialMatches = [];
-            
+
             for (const level in elements.wordContainers) {
                 elements.wordContainers[level].innerHTML = '';
             }
-            
-            elements.timer.textContent = `Time: ${state.timeLeft}s`;
+
+            elements.timer.textContent = `${state.timeLeft}`;
             elements.progressBar.style.width = '0%';
             elements.results.style.display = 'none';
             elements.letterInput.value = '';
@@ -339,38 +356,38 @@
             elements.startBtn.textContent = 'Start Game';
             elements.startBtn.disabled = false;
         }
-        
+
         function startGame() {
             initGame();
             state.gameActive = true;
             elements.letterInput.disabled = false;
             elements.letterInput.focus();
             elements.startBtn.disabled = true;
-            
+
             state.timer = setInterval(updateTimer, 1000);
-            
+
             for (let level = 1; level <= 3; level++) {
                 spawnWord(level);
             }
         }
-        
+
         function updateTimer() {
             state.timeLeft--;
-            elements.timer.textContent = `Time: ${state.timeLeft}s`;
+            elements.timer.textContent = `${state.timeLeft}`;
             elements.progressBar.style.width = `${((config.timeLimit - state.timeLeft) / config.timeLimit) * 100}%`;
-            
+
             if (state.timeLeft <= 0) {
                 endGame();
             }
         }
-        
+
         function spawnWord(level) {
             if (!state.gameActive || !state.canSpawn[level]) return;
-            
+
             state.canSpawn[level] = false;
             const words = config.words[level];
             const word = words[Math.floor(Math.random() * words.length)];
-            
+
             const wordBox = document.createElement('div');
             wordBox.className = 'word-box inactive';
             wordBox.dataset.word = word;
@@ -378,10 +395,10 @@
             wordBox.dataset.progress = '0';
             wordBox.style.animationName = `moveRight-${level}`;
             wordBox.style.animationDuration = `${config.wordSpeed[level]}ms`;
-            
+
             const wordContainer = document.createElement('div');
             wordContainer.className = 'word-container';
-            
+
             for (let i = 0; i < word.length; i++) {
                 const letterSpan = document.createElement('div');
                 letterSpan.className = 'letter';
@@ -389,9 +406,9 @@
                 letterSpan.dataset.index = i;
                 wordContainer.appendChild(letterSpan);
             }
-            
+
             wordBox.appendChild(wordContainer);
-            
+
             const style = document.createElement('style');
             style.textContent = `
                 @keyframes moveRight-${level} {
@@ -400,33 +417,33 @@
                 }
             `;
             document.head.appendChild(style);
-            
+
             elements.wordContainers[level].appendChild(wordBox);
             state.activeWords.push(wordBox);
-            
+
             const startTime = Date.now();
             const animationDuration = config.wordSpeed[level];
-            
+
             const checkProgress = () => {
                 if (!state.gameActive) return;
-                
+
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / animationDuration, 1);
                 wordBox.dataset.progress = Math.floor(progress * 100);
-                
+
                 if (progress >= 0.5 && !wordBox.dataset.midpointReached) {
                     wordBox.dataset.midpointReached = true;
                     state.canSpawn[level] = true;
                     spawnWord(level);
                 }
-                
+
                 if (progress < 1) {
                     requestAnimationFrame(checkProgress);
                 }
             };
-            
+
             requestAnimationFrame(checkProgress);
-            
+
             wordBox.addEventListener('animationend', () => {
                 if (wordBox.dataset.progress !== '100') {
                     wordBox.remove();
@@ -437,8 +454,8 @@
                 }
             });
         }
-        
-       
+
+
         function resetWordBox(wordBox) {
             wordBox.classList.remove('active');
             wordBox.classList.add('inactive');
@@ -447,179 +464,179 @@
                 letter.classList.remove('completed', 'current');
             });
         }
-        
-		function clearActiveWords(forceClearAll = false) {
-			state.activeWords.forEach(wordBox => {
-				// Don't clear completed words unless forced
-				if (!forceClearAll && wordBox.classList.contains('finished')) return;
-				
-				wordBox.classList.remove('active', 'partial-match', 'full-match');
-				wordBox.classList.add('inactive');
-				const letters = wordBox.querySelectorAll('.letter');
-				letters.forEach(letter => {
-					letter.classList.remove('completed', 'current');
-				});
-			});
-		}
-        
-		function checkInput() {
-			if (!state.gameActive) return;
 
-			const input = elements.letterInput.value.toLowerCase();
-			
-			// Clear input if it's too long
-			if (input.length > config.maxInputLength) {
-				clearActiveWords(true);
-				return;
-			}
+        function clearActiveWords(forceClearAll = false) {
+            state.activeWords.forEach(wordBox => {
+                // Don't clear completed words unless forced
+                if (!forceClearAll && wordBox.classList.contains('finished')) return;
 
-			// Handle backspace via separate function
-			if (input.length < state.userInput.length) {
-				handleBackspace();
-				return;
-			}
+                wordBox.classList.remove('active', 'partial-match', 'full-match');
+                wordBox.classList.add('inactive');
+                const letters = wordBox.querySelectorAll('.letter');
+                letters.forEach(letter => {
+                    letter.classList.remove('completed', 'current');
+                });
+            });
+        }
 
-			state.userInput = input;
+        function checkInput() {
+            if (!state.gameActive) return;
 
-			// Clear all active states first
-			clearActiveWords();
+            const input = elements.letterInput.value.toLowerCase();
 
-			// If input is empty, clear all highlights and return
-			if (input.length === 0) {
-				clearActiveWords(true);
-				return;
-			}
+            // Clear input if it's too long
+            if (input.length > config.maxInputLength) {
+                clearActiveWords(true);
+                return;
+            }
 
-			// Find and highlight all matching words
-			state.activeWords.forEach(wordBox => {
-				const word = wordBox.dataset.word;
-				
-				if (word.startsWith(input)) {
-					const letters = wordBox.querySelectorAll('.letter');
-					let correctLength = 0;
-					
-					while (correctLength < input.length && correctLength < word.length && 
-						   input[correctLength] === word[correctLength]) {
-						correctLength++;
-					}
+            // Handle backspace via separate function
+            if (input.length < state.userInput.length) {
+                handleBackspace();
+                return;
+            }
 
-					wordBox.classList.remove('inactive');
-					
-					if (correctLength === word.length && input.length === word.length) {
-						wordBox.classList.add('full-match');
-						wordComplete(wordBox, wordBox.dataset.level);
-					} else {
-						wordBox.classList.add('partial-match');
-					}
+            state.userInput = input;
 
-					for (let i = 0; i < letters.length; i++) {
-						if (i < correctLength) {
-							letters[i].classList.add('completed');
-							letters[i].classList.remove('current');
-						} else if (i === correctLength) {
-							letters[i].classList.add('current');
-						} else {
-							letters[i].classList.remove('current');
-						}
-					}
-				}
-			});
-		}
-        
-		function handleBackspace() {
-			const input = elements.letterInput.value.toLowerCase();
-			state.userInput = input;
-			
-			// If input is empty, clear all highlights
-			if (input.length === 0) {
-				clearActiveWords(true);
-				return;
-			}
-			
-			// Re-check matches for all words with current input
-			state.activeWords.forEach(wordBox => {
-				const word = wordBox.dataset.word;
-				wordBox.classList.remove('partial-match', 'full-match');
-				
-				if (word.startsWith(input)) {
-					const letters = wordBox.querySelectorAll('.letter');
-					let correctLength = 0;
-					
-					// Calculate how much of the word matches
-					while (correctLength < input.length && correctLength < word.length && 
-						   input[correctLength] === word[correctLength]) {
-						correctLength++;
-					}
+            // Clear all active states first
+            clearActiveWords();
 
-					// Update visual state
-					wordBox.classList.remove('inactive');
-					
-					if (correctLength === word.length && input.length === word.length) {
-						wordBox.classList.add('full-match');
-						wordComplete(wordBox, wordBox.dataset.level);
-					} else {
-						wordBox.classList.add('partial-match');
-					}
+            // If input is empty, clear all highlights and return
+            if (input.length === 0) {
+                clearActiveWords(true);
+                return;
+            }
 
-					// Update letter highlighting
-					for (let i = 0; i < letters.length; i++) {
-						if (i < correctLength) {
-							letters[i].classList.add('completed');
-							letters[i].classList.remove('current');
-						} else if (i === correctLength) {
-							letters[i].classList.add('current');
-						} else {
-							letters[i].classList.remove('current');
-						}
-					}
-				} else {
-					// Word no longer matches - reset it
-					wordBox.classList.remove('partial-match', 'full-match');
-					wordBox.classList.add('inactive');
-					const letters = wordBox.querySelectorAll('.letter');
-					letters.forEach(letter => {
-						letter.classList.remove('completed', 'current');
-					});
-				}
-			});
-		}
-		
-		function showScoreToBox(score){
-			document.getElementById('scoreBox').innerHTML =  `Score: ${state.score}`;
-		}
-        
-		function wordComplete(wordBox, level) {
-			wordBox.classList.add('completed', 'finished');
-			wordBox.classList.remove('partial-match', 'full-match');
-			state.score++;
-			state.completedWords[level]++;
-			showScoreToBox(state.score)
-			
-			// Clear input
-			state.userInput = "";
-			elements.letterInput.value = "";
-			
-			// Force clear all highlights since input is now empty
-			clearActiveWords(true);
-			
-			setTimeout(() => {
-				wordBox.remove();
-				state.activeWords = state.activeWords.filter(w => w !== wordBox);
-			}, 500);
-		}
-        
+            // Find and highlight all matching words
+            state.activeWords.forEach(wordBox => {
+                const word = wordBox.dataset.word;
+
+                if (word.startsWith(input)) {
+                    const letters = wordBox.querySelectorAll('.letter');
+                    let correctLength = 0;
+
+                    while (correctLength < input.length && correctLength < word.length &&
+                        input[correctLength] === word[correctLength]) {
+                        correctLength++;
+                    }
+
+                    wordBox.classList.remove('inactive');
+
+                    if (correctLength === word.length && input.length === word.length) {
+                        wordBox.classList.add('full-match');
+                        wordComplete(wordBox, wordBox.dataset.level);
+                    } else {
+                        wordBox.classList.add('partial-match');
+                    }
+
+                    for (let i = 0; i < letters.length; i++) {
+                        if (i < correctLength) {
+                            letters[i].classList.add('completed');
+                            letters[i].classList.remove('current');
+                        } else if (i === correctLength) {
+                            letters[i].classList.add('current');
+                        } else {
+                            letters[i].classList.remove('current');
+                        }
+                    }
+                }
+            });
+        }
+
+        function handleBackspace() {
+            const input = elements.letterInput.value.toLowerCase();
+            state.userInput = input;
+
+            // If input is empty, clear all highlights
+            if (input.length === 0) {
+                clearActiveWords(true);
+                return;
+            }
+
+            // Re-check matches for all words with current input
+            state.activeWords.forEach(wordBox => {
+                const word = wordBox.dataset.word;
+                wordBox.classList.remove('partial-match', 'full-match');
+
+                if (word.startsWith(input)) {
+                    const letters = wordBox.querySelectorAll('.letter');
+                    let correctLength = 0;
+
+                    // Calculate how much of the word matches
+                    while (correctLength < input.length && correctLength < word.length &&
+                        input[correctLength] === word[correctLength]) {
+                        correctLength++;
+                    }
+
+                    // Update visual state
+                    wordBox.classList.remove('inactive');
+
+                    if (correctLength === word.length && input.length === word.length) {
+                        wordBox.classList.add('full-match');
+                        wordComplete(wordBox, wordBox.dataset.level);
+                    } else {
+                        wordBox.classList.add('partial-match');
+                    }
+
+                    // Update letter highlighting
+                    for (let i = 0; i < letters.length; i++) {
+                        if (i < correctLength) {
+                            letters[i].classList.add('completed');
+                            letters[i].classList.remove('current');
+                        } else if (i === correctLength) {
+                            letters[i].classList.add('current');
+                        } else {
+                            letters[i].classList.remove('current');
+                        }
+                    }
+                } else {
+                    // Word no longer matches - reset it
+                    wordBox.classList.remove('partial-match', 'full-match');
+                    wordBox.classList.add('inactive');
+                    const letters = wordBox.querySelectorAll('.letter');
+                    letters.forEach(letter => {
+                        letter.classList.remove('completed', 'current');
+                    });
+                }
+            });
+        }
+
+        function showScoreToBox(score) {
+            document.getElementById('scoreBox').innerHTML = `${state.score}`;
+        }
+
+        function wordComplete(wordBox, level) {
+            wordBox.classList.add('completed', 'finished');
+            wordBox.classList.remove('partial-match', 'full-match');
+            state.score++;
+            state.completedWords[level]++;
+            showScoreToBox(state.score)
+
+            // Clear input
+            state.userInput = "";
+            elements.letterInput.value = "";
+
+            // Force clear all highlights since input is now empty
+            clearActiveWords(true);
+
+            setTimeout(() => {
+                wordBox.remove();
+                state.activeWords = state.activeWords.filter(w => w !== wordBox);
+            }, 500);
+        }
+
         function endGame() {
             clearInterval(state.timer);
             state.gameActive = false;
             elements.letterInput.disabled = true;
             elements.startBtn.disabled = false;
             elements.startBtn.textContent = 'Play Again';
-            
+
             state.activeWords.forEach(wordBox => {
                 wordBox.classList.add('finished');
                 wordBox.classList.remove('active');
             });
-            
+
             elements.results.style.display = 'block';
             elements.results.innerHTML = `
                 <p>Game Over!</p>
@@ -629,15 +646,15 @@
                 <p>Level 3: ${state.completedWords[3]} words</p>
             `;
         }
-        
+
         // Event listeners
         elements.startBtn.addEventListener('click', startGame);
-        
-        elements.letterInput.addEventListener('input', function() {
+
+        elements.letterInput.addEventListener('input', function () {
             checkInput();
         });
-        
-        elements.letterInput.addEventListener('keydown', function(e) {
+
+        elements.letterInput.addEventListener('keydown', function (e) {
             if (e.key === 'Backspace') {
                 // Let the backspace happen first, then handle it
                 setTimeout(() => {
@@ -645,8 +662,9 @@
                 }, 0);
             }
         });
-        
+
         initGame();
     </script>
 </body>
+
 </html>
